@@ -42,8 +42,8 @@ namespace SCPSwap
 		private IEnumerator<float> SendRequest(Player source, Player dest)
 		{
 			ongoingReqs.Add(source, dest);
-			dest.Broadcast(5, "<i>You have an SCP Swap request!\nCheck your console by pressing [`] or [~]</i>");
-			dest.ReferenceHub.characterClassManager.TargetConsolePrint(dest.ReferenceHub.scp079PlayerScript.connectionToClient, $"You have received a swap request from {source.ReferenceHub.nicknameSync.Network_myNickSync} who is SCP-{valid.FirstOrDefault(x => x.Value == source.Role).Key}. Would you like to swap with them? Type \".scpswap yes\" to accept or \".scpswap no\" to decline.", "yellow");
+			dest.Broadcast(5, plugin.Config.SwapRequestBroadcast);
+			dest.SendConsoleMessage(plugin.Config.SwapRequestConsoleMessage.Replace("%player", $"{source.ReferenceHub.nicknameSync.Network_myNickSync}").Replace("%scp", $"{valid.FirstOrDefault(x => x.Value == source.Role).Key}"), "yellow");
 			yield return Timing.WaitForSeconds(plugin.Config.SwapRequestTimeout);
 			TimeoutRequest(source);
 		}
@@ -53,15 +53,15 @@ namespace SCPSwap
 			if (ongoingReqs.ContainsKey(source))
 			{
 				Player dest = ongoingReqs[source];
-				source.ReferenceHub.characterClassManager.TargetConsolePrint(source.ReferenceHub.scp079PlayerScript.connectionToClient, "The player did not respond to your request.", "red");
-				dest.ReferenceHub.characterClassManager.TargetConsolePrint(dest.ReferenceHub.scp079PlayerScript.connectionToClient, "Your swap request has timed out.", "red");
+				source.SendConsoleMessage(plugin.Config.SwapRequestNoResponse, "red");
+				dest.SendConsoleMessage(plugin.Config.SwapRequestTimedOut, "red");
 				ongoingReqs.Remove(source);
 			}
 		}
 
 		private void PerformSwap(Player source, Player dest)
 		{
-			source.ReferenceHub.characterClassManager.TargetConsolePrint(source.ReferenceHub.scp079PlayerScript.connectionToClient, "Swap successful!", "green");
+			source.SendConsoleMessage(plugin.Config.SwapRequestSuccess, "green");
 
 			RoleType sRole = source.Role;
 			RoleType dRole = dest.Role;
@@ -121,21 +121,21 @@ namespace SCPSwap
 			{
 				if (!isRoundStarted)
 				{
-					ev.ReturnMessage = "The round hasn't started yet!";
+					ev.ReturnMessage = plugin.Config.SwapRequestLobby;
 					ev.Color = "red";
 					return;
 				}
 
 				if (!(ev.Player.Team == Team.SCP))
 				{
-					ev.ReturnMessage = "You're not an SCP, why did you think that would work.";
+					ev.ReturnMessage = plugin.Config.SwapRequestDumb;
 					ev.Color = "red";
 					return;
 				}
 
 				if (!allowSwaps)
 				{
-					ev.ReturnMessage = "SCP swap period has expired.";
+					ev.ReturnMessage = plugin.Config.SwapRequestExpired;
 					ev.Color = "red";
 					return;
 				}
@@ -150,51 +150,51 @@ namespace SCPSwap
 								if (swap != null)
 								{
 									PerformSwap(swap, ev.Player);
-									ev.ReturnMessage = "Swap successful!";
+									ev.ReturnMessage = plugin.Config.SwapRequestSuccess;
 									Timing.KillCoroutines(reqCoroutines[swap]);
 									reqCoroutines.Remove(swap);
 									ev.Color = "green";
 									return;
 								}
-								ev.ReturnMessage = "You do not have a swap request.";
+								ev.ReturnMessage = plugin.Config.SwapRequestNone;
 								break;
 							case "no":
 								swap = ongoingReqs.FirstOrDefault(x => x.Value == ev.Player).Key;
 								if (swap != null)
 								{
-									ev.ReturnMessage = "Swap request denied.";
-									swap.ReferenceHub.characterClassManager.TargetConsolePrint(swap.ReferenceHub.scp079PlayerScript.connectionToClient, "Your swap request has been denied.", "red");
+									ev.ReturnMessage = plugin.Config.SwapRequestDenied;
+									swap.SendConsoleMessage(plugin.Config.SwapRequestDenied, "red");
 									Timing.KillCoroutines(reqCoroutines[swap]);
 									reqCoroutines.Remove(swap);
 									ongoingReqs.Remove(swap);
 									return;
 								}
-								ev.ReturnMessage = "You do not have a swap reqest.";
+								ev.ReturnMessage = plugin.Config.SwapRequestNone;
 								break;
 							case "cancel":
 								if (ongoingReqs.ContainsKey(ev.Player))
 								{
 									Player dest = ongoingReqs[ev.Player];
-									dest.ReferenceHub.characterClassManager.TargetConsolePrint(dest.ReferenceHub.scp079PlayerScript.connectionToClient, "Your swap request has been cancelled.", "red");
+									dest.SendConsoleMessage(plugin.Config.SwapRequestCancelled, "red");
 									Timing.KillCoroutines(reqCoroutines[ev.Player]);
 									reqCoroutines.Remove(ev.Player);
 									ongoingReqs.Remove(ev.Player);
-									ev.ReturnMessage = "You have cancelled your swap request.";
+									ev.ReturnMessage = plugin.Config.SwapRequestCancel;
 									return;
 								}
-								ev.ReturnMessage = "You do not have an outgoing swap request.";
+								ev.ReturnMessage = plugin.Config.SwapRequestNoneOutgoing;
 								break;
 							default:
 								if (!valid.ContainsKey(ev.Arguments[0]))
 								{
-									ev.ReturnMessage = "Invalid SCP.";
+									ev.ReturnMessage = plugin.Config.SwapRequestInvalid;
 									ev.Color = "red";
 									return;
 								}
 
 								if (ongoingReqs.ContainsKey(ev.Player))
 								{
-									ev.ReturnMessage = "You already have a request pending!";
+									ev.ReturnMessage = plugin.Config.SwapRequestPending;
 									ev.Color = "red";
 									return;
 								}
@@ -202,14 +202,14 @@ namespace SCPSwap
 								RoleType role = valid[ev.Arguments[0]];
 								if (plugin.Config.SwapBlacklist.Contains((int)role))
 								{
-									ev.ReturnMessage = "That SCP is blacklisted.";
+									ev.ReturnMessage = plugin.Config.SwapRequestBlacklisted;
 									ev.Color = "red";
 									return;
 								}
 
 								if (ev.Player.Role == role)
 								{
-									ev.ReturnMessage = "You cannot swap with your own role.";
+									ev.ReturnMessage = plugin.Config.SwapRequestOwnRole;
 									ev.Color = "red";
 									return;
 								}
@@ -218,24 +218,24 @@ namespace SCPSwap
 								if (swap != null)
 								{
 									reqCoroutines.Add(ev.Player, Timing.RunCoroutine(SendRequest(ev.Player, swap)));
-									ev.ReturnMessage = "Swap request sent!";
+									ev.ReturnMessage = plugin.Config.SwapRequestSent;
 									ev.Color = "green";
 									return;
 								}
 								if (plugin.Config.SwapAllowNewScps)
 								{
 									ev.Player.ReferenceHub.characterClassManager.SetPlayersClass(role, ev.Player.ReferenceHub.gameObject);
-									ev.ReturnMessage = "Could not find a player to swap with, you have been made the specified SCP.";
+									ev.ReturnMessage = plugin.Config.SwapRequestSuccessFree;
 									ev.Color = "green";
 									return;
 								}
-								ev.ReturnMessage = "No players found to swap with.";
+								ev.ReturnMessage = plugin.Config.SwapRequestNoPlayers;
 								ev.Color = "red";
 								break;
 						}
 						break;
 					default:
-						ev.ReturnMessage = "USAGE: SCPSWAP [SCP NUMBER]";
+						ev.ReturnMessage = plugin.Config.SwapRequestUsage;
 						ev.Color = "red";
 						break;
 				}
