@@ -44,6 +44,8 @@ namespace SCPSwap {
 			{"scp173", RoleType.Scp173},
 			{"939", RoleType.Scp93953},
 			{"dog", RoleType.Scp93953},
+			{"perro", RoleType.Scp93953},
+			{"perra", RoleType.Scp93989},
 			{"scp93953", RoleType.Scp93953},
 			{"079", RoleType.Scp079},
 			{"computer", RoleType.Scp079},
@@ -52,6 +54,7 @@ namespace SCPSwap {
 			{"scp079", RoleType.Scp079},
 			{"106", RoleType.Scp106},
 			{"scp106", RoleType.Scp106},
+			{"negro", RoleType.Scp106},
 			{"larry", RoleType.Scp106},
 			{"sombra", RoleType.Scp106},
 			{"096", RoleType.Scp096},
@@ -77,13 +80,13 @@ namespace SCPSwap {
 
 		public void SetRole(ChangingRoleEventArgs ev) {
 			if(ev.NewRole.GetTeam() == Team.SCP) {
-				ev.Player.ShowHint(plugin.Config.SwapInfoHint, plugin.Config.SwapInfoHintDur);
+				ev.Player.Broadcast(plugin.Config.SwapInfoHintDur, plugin.Config.SwapInfoHint);
 			}
 		}
 
 		private IEnumerator<float> SendRequest(Player source, Player dest) {
 			ongoingReqs.Add(source, dest);
-			dest.Broadcast(5, plugin.Config.SwapRequestBroadcast.Replace("%player", source.Nickname).Replace("%role2", source.Role.ToString()).Replace("%role1", dest.Role.ToString()));
+			dest.Broadcast(7, plugin.Config.SwapRequestBroadcast.Replace("%player", source.Nickname).Replace("%role2", source.Role.ToString()).Replace("%role1", dest.Role.ToString()));
 			dest.SendConsoleMessage(plugin.Config.SwapRequestConsoleMessage.Replace("%player", $"{source.ReferenceHub.nicknameSync.Network_myNickSync}").Replace("%scp", source.Role.ToString()), "yellow");//{valid.FirstOrDefault(x => x.Value == source.Role).Key}
 			yield return Timing.WaitForSeconds(plugin.Config.SwapRequestTimeout);
 			TimeoutRequest(source);
