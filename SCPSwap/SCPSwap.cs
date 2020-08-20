@@ -13,21 +13,13 @@ namespace SCPSwap
 		public override void OnEnabled()
 		{
 			Handler = new EventHandlers(this);
-			Exiled.Events.Handlers.Server.WaitingForPlayers += Handler.OnWaitingForPlayers;
-			Exiled.Events.Handlers.Server.RoundStarted += Handler.OnRoundStart;
-			Exiled.Events.Handlers.Server.RoundEnded += Handler.OnRoundEnd;
-			Exiled.Events.Handlers.Server.RestartingRound += Handler.OnRoundRestart;
-			Exiled.Events.Handlers.Server.SendingConsoleCommand += Handler.OnConsoleCommand;
+			Handler.Start();
 		}
 
 		public override void OnDisabled()
 		{
-			Exiled.Events.Handlers.Server.WaitingForPlayers -= Handler.OnWaitingForPlayers;
-			Exiled.Events.Handlers.Server.RoundStarted -= Handler.OnRoundStart;
-			Exiled.Events.Handlers.Server.RoundEnded -= Handler.OnRoundEnd;
-			Exiled.Events.Handlers.Server.RestartingRound -= Handler.OnRoundRestart;
-			Exiled.Events.Handlers.Server.SendingConsoleCommand -= Handler.OnConsoleCommand;
 			Handler = null;
+			Handler.Stop();
 		}
 
 		public override void OnReloaded() { }
