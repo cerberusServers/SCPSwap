@@ -40,6 +40,9 @@
     <Reference Include="Assembly-CSharp_public">
       <HintPath>..\..\..\..\References\Publicizer\Assembly-CSharp_public.dll</HintPath>
     </Reference>
+    <Reference Include="CerberusTweaks">
+      <HintPath>..\..\..\..\References\Plugins\CerberusTweaks.dll</HintPath>
+    </Reference>
     <Reference Include="Exiled.API, Version=2.0.10.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EXILED.2.0.10\lib\net472\Exiled.API.dll</HintPath>
     </Reference>

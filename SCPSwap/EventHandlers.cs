@@ -2,6 +2,7 @@
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using MEC;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -155,6 +156,10 @@ namespace SCPSwap {
 					ev.ReturnMessage = plugin.Config.SwapRequestLobby;
 					ev.Color = "red";
 					return;
+				} else if(InEvent()) {
+					ev.ReturnMessage = "Estamos en evento, Licht la tiene corta. - Atte: Andrés";
+					ev.Color = "red";
+					return;
 				}
 
 				if(!(ev.Player.Team == Team.SCP)) {
@@ -267,5 +272,15 @@ namespace SCPSwap {
 				}
 			}
 		}
+
+		public bool InEvent() {
+			try {
+				return CerberusTweaks.Plugin.InEvent;
+			} catch(Exception) {
+				Log.Error("No se detectó CerberusTweaks");
+				return false;
+			}
+		}
+
 	}
 }
