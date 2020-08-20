@@ -36,7 +36,7 @@ namespace SCPSwap
         public string SwapRequestPending { get; set; } = "<color=red>Ya tienes una solicitud de intercambio pendiente.</color>";
         public string SwapRequestBlacklisted { get; set; } = "<color=red>Éste rol está en la lista negra, intenta con otro.</color>";
         public string SwapRequestOwnRole { get; set; } = "<color=red>No puedes intercambiar con tu propio rol.</color>";
-        public string SwapRequestSent { get; set; } = "Swap request sent!";
+        public string SwapRequestSent { get; set; } = "Solicitud de intercambio enviada!";
         public string SwapRequestSuccessFree { get; set; } = "<color=#4ce300>No se encontró a nadie con ese rol, reclamando...\n\n¡Rol reclamado con éxito!</color>";
         public string SwapRequestNoPlayers { get; set; } = "<color=red>No se encontró ese SCP.</color>";
         public string SwapRequestUsage { get; set; } = "" +
