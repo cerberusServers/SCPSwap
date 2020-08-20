@@ -79,13 +79,13 @@ namespace SCPSwap {
 
 		public void SetRole(ChangingRoleEventArgs ev) {
 			if(ev.NewRole.GetTeam() == Team.SCP) {
-				ev.Player.ShowHint(plugin.Config.SwapInfoHint, plugin.Config.SwapInfoHintDur);
+				ev.Player.Broadcast(plugin.Config.SwapInfoHintDur, plugin.Config.SwapInfoHint);
 			}
 		}
 
 		private IEnumerator<float> SendRequest(Player source, Player dest) {
 			ongoingReqs.Add(source, dest);
-			dest.Broadcast(5, plugin.Config.SwapRequestBroadcast.Replace("%player", source.Nickname).Replace("%role2", source.Role.ToString()).Replace("%role1", dest.Role.ToString()));
+			dest.Broadcast(7, plugin.Config.SwapRequestBroadcast.Replace("%player", source.Nickname).Replace("%role2", source.Role.ToString()).Replace("%role1", dest.Role.ToString()));
 			dest.SendConsoleMessage(plugin.Config.SwapRequestConsoleMessage.Replace("%player", $"{source.ReferenceHub.nicknameSync.Network_myNickSync}").Replace("%scp", source.Role.ToString()), "yellow");//{valid.FirstOrDefault(x => x.Value == source.Role).Key}
 			yield return Timing.WaitForSeconds(plugin.Config.SwapRequestTimeout);
 			TimeoutRequest(source);

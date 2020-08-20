@@ -42,8 +42,8 @@ namespace SCPSwap
         public string SwapRequestUsage { get; set; } = "" +
             "<color=#f7ff9c>Uso correcto:</color> <color=#4ce300>.swap [Nombre/ID]</color>" +
             "\nEjemplos: \n\".swap plaga\" - \".swap scp173\" - \".swap 106\"";
-        public string SwapInfoHint { get; set; } = "\n<size=30><color=#f29f05><b>¡Te recordamos que puedes abrir la consola con <color=#81b4f7>[Ñ] <color=#f29f05>o <color=#81b4f7>[~] <color=#f29f05>para ver información sobre tus <color=#4ce300><u>comandos</u> <u>especiales</u><color=#f29f05>.</b></size>";
-        public float SwapInfoHintDur { get; set; } = 9;
+        public string SwapInfoHint { get; set; } = "<size=32><color=yellow><b>Sabias que puedes intercambiar SCPs con los demas?</b></color></size>\n<size=25>Simplemente escribe <color=orange>.scpswap (Numero/Nombre del SCP)</color> en la consola ingame que se abre con la [<color=red>Ñ</color>] o [<color=red>~</color>]!</size>\n<size=15><color=red>Ejemplo:</color> <color=orange>.scpswap 173</color></size>";
+        public ushort SwapInfoHintDur { get; set; } = 15;
         public List<int> SwapBlacklist { get; private set; } = new List<int>() { 10 };
     }
 }
