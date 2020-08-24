@@ -152,9 +152,9 @@ namespace SCPSwap {
 		}
 
 		public void OnConsoleCommand(SendingConsoleCommandEventArgs ev) {
-			ev.Allow = false;
 			string name = ev.Name.ToLower();
 			if(name.Equals("scpswap") || name.Equals("intercambio") || name.Equals("intercambiar") || name.Equals("swap")) {
+				ev.Allow = false;
 				if(!isRoundStarted) {
 					ev.ReturnMessage = plugin.Config.SwapRequestLobby;
 					ev.Color = "red";
