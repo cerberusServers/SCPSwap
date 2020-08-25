@@ -40,6 +40,9 @@
     <Reference Include="Assembly-CSharp_public">
       <HintPath>..\..\..\Server_SCP\SCPSL_Data\Managed\Assembly-CSharp_public.dll</HintPath>
     </Reference>
+    <Reference Include="CerberusTweaks">
+      <HintPath>..\..\Cerberus\CerberusProjects\CerberusTweaks\obj\Debug\CerberusTweaks.dll</HintPath>
+    </Reference>
     <Reference Include="Exiled.API, Version=2.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.2.1.0\lib\net472\Exiled.API.dll</HintPath>
     </Reference>
