@@ -221,6 +221,8 @@ namespace SCPSwap
 								ev.ReturnMessage = plugin.Config.SwapRequestNone;
 								break;
 							case "no":
+							case "nop":
+							case "No":
 							case "n":
 								swap = ongoingReqs.FirstOrDefault(x => x.Value == ev.Player).Key;
 								if (swap != null)

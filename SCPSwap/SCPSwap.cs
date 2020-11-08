@@ -6,7 +6,7 @@ namespace SCPSwap
     {
 		public EventHandlers Handler { get; private set; }
 		public override string Name => nameof(ScpSwap);
-		public override string Author => "Cyanox";
+		public override string Author => "Beryl";
 
 		public ScpSwap() { }
 
