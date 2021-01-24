@@ -20,7 +20,7 @@ namespace SCPSwap
     {
         public string Command => "scpswap";
 
-        public string[] Aliases => new string[] { "intercambio","intercambiar","intercambiar" };
+        public string[] Aliases => new string[] { "intercambio","intercambiar" };
 
         public string Description => "\n<color=yellow>| Te permite cambiar de SCP y si otra persona tiene el SCP que tu tienes, pueden intercambiar entre los dos | </color>";
 
