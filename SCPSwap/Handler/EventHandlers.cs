@@ -6,21 +6,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using SCPSwap.Base;
 
-namespace SCPSwap
+namespace SCPSwap.Handlers
 {
-	public sealed class EventHandlers
+	public sealed class EventHandlers : Base.Handler
 	{
-		private Dictionary<Player, Player> ongoingReqs = new Dictionary<Player, Player>();
+		public static Dictionary<Player, Player> ongoingReqs = new Dictionary<Player, Player>();
 
-		private List<CoroutineHandle> coroutines = new List<CoroutineHandle>();
-		private Dictionary<Player, CoroutineHandle> reqCoroutines = new Dictionary<Player, CoroutineHandle>();
+		public static List<CoroutineHandle> coroutines = new List<CoroutineHandle>();
+		public static Dictionary<Player, CoroutineHandle> reqCoroutines = new Dictionary<Player, CoroutineHandle>();
 
-		private bool allowSwaps = false;
-		private bool isRoundStarted = false;
+		public static bool allowSwaps = false;
+		public static bool isRoundStarted = false;
 
-		public void Start()
-		{
+		public EventHandlers(Plugin plugin) : base(plugin) { }
+		public override void Start()
+        {
 			Exiled.Events.Handlers.Player.ChangingRole += SetRole;
 			Exiled.Events.Handlers.Server.WaitingForPlayers += OnWaitingForPlayers;
 			Exiled.Events.Handlers.Server.RoundStarted += OnRoundStart;
@@ -29,8 +31,8 @@ namespace SCPSwap
 			Exiled.Events.Handlers.Server.SendingConsoleCommand += OnConsoleCommand;
 		}
 
-		public void Stop()
-		{
+        public override void Stop()
+        {
 			Exiled.Events.Handlers.Player.ChangingRole -= SetRole;
 			Exiled.Events.Handlers.Server.WaitingForPlayers -= OnWaitingForPlayers;
 			Exiled.Events.Handlers.Server.RoundStarted -= OnRoundStart;
@@ -39,7 +41,9 @@ namespace SCPSwap
 			Exiled.Events.Handlers.Server.SendingConsoleCommand -= OnConsoleCommand;
 		}
 
-		private Dictionary<string, RoleType> valid = new Dictionary<string, RoleType>()
+
+
+		public static Dictionary<string, RoleType> valid = new Dictionary<string, RoleType>()
 		{
 			{"173", RoleType.Scp173},
 			{"peanut", RoleType.Scp173},
@@ -78,10 +82,6 @@ namespace SCPSwap
 			{"scp0492", RoleType.Scp0492}
 		};
 
-		public ScpSwap plugin;
-
-		public EventHandlers(ScpSwap plugin) => this.plugin = plugin;
-
 		public void SetRole(ChangingRoleEventArgs ev)
 		{
 			if (ev.NewRole.GetTeam() == Team.SCP)
@@ -90,29 +90,29 @@ namespace SCPSwap
 			}
 		}
 
-		private IEnumerator<float> SendRequest(Player source, Player dest)
+		public static IEnumerator<float> SendRequest(Player source, Player dest)
 		{
 			ongoingReqs.Add(source, dest);
-			dest.Broadcast(7, plugin.Config.SwapRequestBroadcast.Replace("%player", source.Nickname).Replace("%role2", source.Role.ToString()).Replace("%role1", dest.Role.ToString()));
-			dest.SendConsoleMessage(plugin.Config.SwapRequestConsoleMessage.Replace("%player", $"{source.ReferenceHub.nicknameSync.Network_myNickSync}").Replace("%scp", source.Role.ToString()), "yellow");//{valid.FirstOrDefault(x => x.Value == source.Role).Key}
-			yield return Timing.WaitForSeconds(plugin.Config.SwapRequestTimeout);
+			dest.Broadcast(7, Plugin.Instance.Config.SwapRequestBroadcast.Replace("%player", source.Nickname).Replace("%role2", source.Role.ToString()).Replace("%role1", dest.Role.ToString()));
+			dest.SendConsoleMessage(Plugin.Instance.Config.SwapRequestConsoleMessage.Replace("%player", $"{source.ReferenceHub.nicknameSync.Network_myNickSync}").Replace("%scp", source.Role.ToString()), "yellow");//{valid.FirstOrDefault(x => x.Value == source.Role).Key}
+			yield return Timing.WaitForSeconds(Plugin.Instance.Config.SwapRequestTimeout);
 			TimeoutRequest(source);
 		}
 
-		private void TimeoutRequest(Player source)
+		public static void TimeoutRequest(Player source)
 		{
 			if (ongoingReqs.ContainsKey(source))
 			{
 				Player dest = ongoingReqs[source];
-				source.SendConsoleMessage(plugin.Config.SwapRequestNoResponse, "red");
-				dest.SendConsoleMessage(plugin.Config.SwapRequestTimedOut, "red");
+				source.SendConsoleMessage(Plugin.Instance.Config.SwapRequestNoResponse, "red");
+				dest.SendConsoleMessage(Plugin.Instance.Config.SwapRequestTimedOut, "red");
 				ongoingReqs.Remove(source);
 			}
 		}
 
-		private void PerformSwap(Player source, Player dest)
+		public static void PerformSwap(Player source, Player dest)
 		{
-			source.SendConsoleMessage(plugin.Config.SwapRequestSuccess, "green");
+			source.SendConsoleMessage(Plugin.Instance.Config.SwapRequestSuccess, "green");
 
 			RoleType sRole = source.Role;
 			RoleType dRole = dest.Role;
@@ -167,8 +167,8 @@ namespace SCPSwap
 
 		public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
 		{
-			string name = ev.Name.ToLower();
-			if (name.Equals("scpswap") || name.Equals("intercambio") || name.Equals("intercambiar") || name.Equals("swap"))
+			/*string name = ev.Name.ToLower();
+			if (name.Equals("scpswap") || name.Equals("intercambio") || name.Equals("intercambiar") || name.Equals(""))
 			{
 				ev.Allow = false;
 				if (!isRoundStarted)
@@ -307,10 +307,10 @@ namespace SCPSwap
 						ev.Color = "red";
 						break;
 				}
-			}
+			}*/
 		}
 
-		public bool InEvent()
+		public static bool InEvent()
 		{
 			try
 			{
@@ -323,5 +323,5 @@ namespace SCPSwap
 			}
 		}
 
-	}
+    }
 }
