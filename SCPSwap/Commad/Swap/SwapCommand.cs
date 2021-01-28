@@ -28,6 +28,7 @@ namespace SCPSwap
         {
             if (sender != null)
             {
+                IList<string> argList = arguments;
                 var plugin = Plugin.Instance;
                 Player player = Player.Get((sender as CommandSender).SenderId);
                 if (!EventHandlers.isRoundStarted)
@@ -54,10 +55,10 @@ namespace SCPSwap
                     return false;
                 }
 
-                switch (arguments.Array.Count())
+                switch (argList.Count())
                 {
                     case 1:
-                        switch (arguments.Array[0].ToLower())
+                        switch (argList[0].ToLower())
                         {
                             case "yes":
                             case "si":
@@ -108,7 +109,7 @@ namespace SCPSwap
                                 response = "\n" + plugin.Config.SwapRequestNoneOutgoing;
                                 return true;
                             default:
-                                if (!EventHandlers.valid.ContainsKey(arguments.Array[0]))
+                                if (!EventHandlers.valid.ContainsKey(argList[0]))
                                 {
                                     response = "\n" + plugin.Config.SwapRequestInvalid;
                                     return false;
@@ -120,7 +121,7 @@ namespace SCPSwap
                                     return false;
                                 }
 
-                                RoleType role = EventHandlers.valid[arguments.Array[0]];
+                                RoleType role = EventHandlers.valid[argList[0]];
                                 if (plugin.Config.SwapBlacklist.Contains((int)role))
                                 {
                                     response = "\n" + plugin.Config.SwapRequestBlacklisted;
