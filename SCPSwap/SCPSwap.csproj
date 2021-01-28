@@ -89,7 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\Handler.cs" />
-    <Compile Include="Commad\Swap\SwapCommand.cs" />
+    <Compile Include="Command\Swap\SwapCommand.cs" />
     <Compile Include="System\Config.cs" />
     <Compile Include="Handler\EventHandlers.cs" />
     <Compile Include="System\Plugin.cs" />

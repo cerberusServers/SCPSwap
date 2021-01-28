@@ -58,6 +58,7 @@ namespace SCPSwap.Handlers
 			{"079", RoleType.Scp079},
 			{"computer", RoleType.Scp079},
 			{"computadora", RoleType.Scp079},
+			{"camara", RoleType.Scp079},
 			{"pc", RoleType.Scp079},
 			{"scp079", RoleType.Scp079},
 			{"106", RoleType.Scp106},

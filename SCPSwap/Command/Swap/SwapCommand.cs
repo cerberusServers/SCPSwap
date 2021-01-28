@@ -13,7 +13,7 @@ using MEC;
 using SCPSwap;
 using SCPSwap.Handlers;
 
-namespace SCPSwap
+namespace SCPSwap.Command.Swap
 {
     [CommandHandler(typeof(ClientCommandHandler))]
     public class SwapCommand : ICommand
